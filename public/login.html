@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetroMatriX | Access Portal</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #4ade80;
+            --secondary: #3b82f6;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--dark);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.3) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(74, 222, 128, 0.3) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--light);
+            font-family: 'Outfit', sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 2px;
+            position: relative;
+            animation: fadeIn 0.8s ease-out;
+            z-index: 10;
+        }
+
+        .login-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Ambient glow effect */
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.03),
+                    transparent);
+            transform: rotate(45deg);
+            animation: shine 6s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes shine {
+            0% {
+                transform: rotate(45deg) translateY(-100%);
+            }
+
+            100% {
+                transform: rotate(45deg) translateY(100%);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .brand-logo {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #4ade80, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+            text-align: center;
+            letter-spacing: -1px;
+        }
+
+        .brand-subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        /* Role Selection Cards */
+        .role-option {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .role-option:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .role-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* Form Styling */
+        .form-control {
+            background: rgba(15, 23, 42, 0.8) !important;
+            border: 1px solid var(--glass-border);
+            color: white !important;
+            border-radius: 12px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            background: rgba(15, 23, 42, 0.95) !important;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .form-label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        }
+
+        .input-group-text {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--glass-border);
+            border-left: none;
+            color: #94a3b8;
+        }
+
+        /* Floating elements */
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            background: #3b82f6;
+            top: -100px;
+            left: -100px;
+            animation: float 10s infinite ease-in-out;
+        }
+
+        .shape-2 {
+            width: 250px;
+            height: 250px;
+            background: #4ade80;
+            bottom: -50px;
+            right: -50px;
+            animation: float 12s infinite ease-in-out reverse;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(30px, 50px);
+            }
+        }
+
+        /* Utils */
+        .d-none {
+            display: none !important;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
+        }
+
+        .hover-white:hover {
+            color: white !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background Elements -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+
+    <div class="login-container">
+        <div class="login-card">
+            <img src="logo.png" alt="MetroMatriX" class="brand-logo-img"
+                style="max-width: 200px; height: auto; margin-bottom: 10px;">
+            <p class="brand-subtitle">Urban Intelligence Platform</p>
+
+            <div id="alertPlaceholder"></div>
+
+            <!-- Step 1: Role Selection -->
+            <div id="roleSelection">
+                <h5 class="text-center mb-4 text-white">Select Access Portal</h5>
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="role-option" onclick="selectRole('official')">
+                            <span class="role-icon">⚙</span>
+                            <div class="fw-bold text-white">Official</div>
+                            <small class="text-white-50" style="font-size: 0.75rem;">Admin Access</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="role-option" onclick="selectRole('citizen')">
+                            <span class="role-icon">👤</span>
+                            <div class="fw-bold text-white">Citizen</div>
+                            <small class="text-white-50" style="font-size: 0.75rem;">Public Portal</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Login Form (Initially Hidden) -->
+            <div id="loginFormContainer" class="d-none">
+                <div class="d-flex align-items-center mb-4">
+                    <button class="btn btn-sm btn-link text-decoration-none text-white p-0 me-2"
+                        onclick="backToRoles()">
+                        ← Back
+                    </button>
+                    <h5 class="mb-0 text-white"><span id="selectedRoleDisplay"></span> Login</h5>
+                </div>
+
+                <form id="authForm" onsubmit="handleLogin(event)">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" placeholder="Enter your password"
+                                required>
+                            <span class="input-group-text cursor-pointer" onclick="togglePassword()">
+                                👁
+                            </span>
+                        </div>
+                        <div class="d-flex justify-content-end mt-2">
+                            <a href="#" class="small text-secondary text-decoration-none hover-white"
+                                onclick="showForgotPassword()">Forgot
+                                Password?</a>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mb-3">Sign In</button>
+
+                    <div id="signupLink" class="text-center">
+                        <small class="text-white-50">New here? <a href="#" class="text-primary text-decoration-none"
+                                onclick="toggleSignupMode()">Create an account</a></small>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Step 3: Signup Form (Initially Hidden) -->
+            <div id="signupFormContainer" class="d-none">
+                <div class="d-flex align-items-center mb-4">
+                    <button class="btn btn-sm btn-link text-decoration-none text-white p-0 me-2"
+                        onclick="toggleSignupMode()">
+                        ← Login
+                    </button>
+                    <h5 class="mb-0 text-white">Create Account</h5>
+                </div>
+
+                <form id="registerForm" onsubmit="handleRegister(event)">
+                    <div class="mb-3">
+                        <label for="regName" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="regName" placeholder="John Doe" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="regEmail" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="regEmail" placeholder="name@example.com" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="regPassword" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="regPassword" placeholder="Create a password"
+                            required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Create Account</button>
+                </form>
+            </div>
+
+            <!-- Step 4: Forgot Password Request (Initially Hidden) -->
+            <div id="forgotPasswordContainer" class="d-none">
+                <div class="d-flex align-items-center mb-4">
+                    <button class="btn btn-sm btn-link text-decoration-none text-white p-0 me-2"
+                        onclick="showLoginFromForgot()">
+                        ← Login
+                    </button>
+                    <h5 class="mb-0 text-white">Reset Password</h5>
+                </div>
+                <p class="text-white-50 small mb-3">Enter your email to receive a verification code.</p>
+                <form id="forgotForm" onsubmit="handleForgotRequest(event)">
+                    <div class="mb-3">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="forgotEmail" placeholder="name@example.com"
+                            required>
+                    </div>
+                    <button type="submit" class="btn btn-warning w-100">Send Reset Code</button>
+                </form>
+            </div>
+
+            <!-- Step 5: Verify & Reset Password (Initially Hidden) -->
+            <div id="resetPasswordContainer" class="d-none">
+                <h5 class="mb-4 text-white">New Password</h5>
+                <p class="text-success small mb-3" id="codeSentMsg">Code sent! Check your email (console).</p>
+                <form id="resetForm" onsubmit="handleResetConfirm(event)">
+                    <div class="mb-3">
+                        <label class="form-label">Verification Code</label>
+                        <input type="text" class="form-control" id="resetToken" placeholder="1234" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="resetNewPass" placeholder="New Password"
+                            required>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Update Password</button>
+                </form>
+            </div>
+
+        </div>
+        <div class="text-center mt-4">
+            <small class="text-muted opacity-50">© 2024 MetroMatriX Initiative</small>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="js/auth.js?v=4"></script>
+    <script>
+        // CRITICAL: Always clear session when login page loads
+        // This ensures login page is ALWAYS the first interface
+        // Exception: Don't clear if we're in the middle of a form submission
+        const isFormSubmission = sessionStorage.getItem('formSubmitting');
+        if (!isFormSubmission) {
+            sessionStorage.clear();
+        } else {
+            sessionStorage.removeItem('formSubmitting');
+        }
+
+        let selectedRole = '';
+
+        // Show alerts using Bootstrap
+        function showAlert(message, type = 'danger') {
+            const alertPlaceholder = document.getElementById('alertPlaceholder');
+            alertPlaceholder.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            setTimeout(() => {
+                const alert = bootstrap.Alert.getInstance(alertPlaceholder.querySelector('.alert'));
+                if (alert) alert.close();
+            }, 5000);
+        }
+
+        // Role Selection
+        function selectRole(role) {
+            selectedRole = role;
+            document.getElementById('selectedRoleDisplay').textContent = role.charAt(0).toUpperCase() + role.slice(1);
+
+            // Hide Role Selection, Show Login Form
+            document.getElementById('roleSelection').classList.add('d-none');
+            document.getElementById('loginFormContainer').classList.remove('d-none');
+            document.getElementById('loginFormContainer').classList.add('fade-in');
+
+            // Show/Hide Signup Link based on role
+            // Officials usually don't sign up via this portal, but we'll leave it for now or hide it
+            if (role === 'official') {
+                // Optional: document.getElementById('signupLink').style.display = 'none';
+            }
+        }
+
+        // Back to Role Selection
+        function backToRoles() {
+            selectedRole = '';
+            document.getElementById('loginFormContainer').classList.add('d-none');
+            document.getElementById('signupFormContainer').classList.add('d-none');
+            document.getElementById('roleSelection').classList.remove('d-none');
+            document.getElementById('roleSelection').classList.add('fade-in');
+            document.getElementById('alertPlaceholder').innerHTML = '';
+        }
+
+        // Toggle between Login and Signup
+        function toggleSignupMode() {
+            const loginContainer = document.getElementById('loginFormContainer');
+            const signupContainer = document.getElementById('signupFormContainer');
+
+            if (loginContainer.classList.contains('d-none')) {
+                // Show Login
+                signupContainer.classList.add('d-none');
+                loginContainer.classList.remove('d-none');
+                loginContainer.classList.add('fade-in');
+            } else {
+                // Show Signup
+                loginContainer.classList.add('d-none');
+                signupContainer.classList.remove('d-none');
+                signupContainer.classList.add('fade-in');
+            }
+            document.getElementById('alertPlaceholder').innerHTML = '';
+        }
+
+        // Password Visibility Toggle
+        function togglePassword() {
+            const passField = document.getElementById('password');
+            if (passField.type === 'password') {
+                passField.type = 'text';
+            } else {
+                passField.type = 'password';
+            }
+        }
+
+        // Handle Login
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+
+            btn.innerText = 'Signing In...';
+            btn.disabled = true;
+
+            // Set flag to prevent session clearing on redirect
+            sessionStorage.setItem('formSubmitting', 'true');
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, role: selectedRole })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Clear the flag
+                    sessionStorage.removeItem('formSubmitting');
+
+                    // Store session data
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                    sessionStorage.setItem('userRole', data.role || selectedRole);
+                    sessionStorage.setItem('userEmail', email);
+                    sessionStorage.setItem('userName', data.name || 'User');
+                    if (data.area) sessionStorage.setItem('userArea', data.area);
+                    if (data.profilePic) sessionStorage.setItem('userPic', data.profilePic);
+                    if (data.phoneNumber) sessionStorage.setItem('userPhone', data.phoneNumber);
+                    if (data.gender) sessionStorage.setItem('userGender', data.gender);
+                    if (data.dob) sessionStorage.setItem('userDOB', data.dob);
+
+                    showAlert('Login successful! Redirecting...', 'success');
+                    setTimeout(() => window.location.href = '/home', 800); // Redirect to /home
+                } else {
+                    sessionStorage.removeItem('formSubmitting');
+                    showAlert(data.message || 'Login failed', 'danger');
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                sessionStorage.removeItem('formSubmitting');
+                console.error('Login error:', err);
+                showAlert('Server error. Please check your connection.', 'danger');
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // Handle Register
+        async function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+
+            btn.innerText = 'Creating Account...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, role: selectedRole })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('Account created successfully! Logging you in...', 'success');
+
+                    // Auto login after register
+                    sessionStorage.setItem('userEmail', email);
+                    sessionStorage.setItem('userRole', selectedRole);
+                    sessionStorage.setItem('isLoggedIn', 'true');
+
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1000);
+                } else {
+                    showAlert(data.message || 'Registration failed', 'danger');
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                console.error(err);
+                showAlert('Server error. Please try again.', 'danger');
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        }
+        // Forgot Password UI Helpers
+        function showForgotPassword() {
+            document.getElementById('loginFormContainer').classList.add('d-none');
+            document.getElementById('forgotPasswordContainer').classList.remove('d-none');
+            document.getElementById('forgotPasswordContainer').classList.add('fade-in');
+        }
+
+        function showLoginFromForgot() {
+            document.getElementById('forgotPasswordContainer').classList.add('d-none');
+            document.getElementById('resetPasswordContainer').classList.add('d-none');
+            document.getElementById('loginFormContainer').classList.remove('d-none');
+        }
+
+        async function handleForgotRequest(e) {
+            e.preventDefault();
+            const email = document.getElementById('forgotEmail').value;
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+
+            btn.innerText = 'Sending...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/forgot-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    // Show Reset Form
+                    document.getElementById('forgotPasswordContainer').classList.add('d-none');
+                    document.getElementById('resetPasswordContainer').classList.remove('d-none');
+                    document.getElementById('resetPasswordContainer').classList.add('fade-in');
+                    document.getElementById('codeSentMsg').innerText = `Code sent to ${email} (Check Console)`;
+                } else {
+                    showAlert(data.message, 'danger');
+                }
+            } catch (err) {
+                console.error(err);
+                showAlert('Network Error', 'danger');
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        async function handleResetConfirm(e) {
+            e.preventDefault();
+            const email = document.getElementById('forgotEmail').value;
+            const token = document.getElementById('resetToken').value;
+            const newPassword = document.getElementById('resetNewPass').value;
+            const btn = e.target.querySelector('button');
+
+            btn.innerText = 'Updating...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/reset-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, token, newPassword })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    showAlert('Password Reset Successfully! Please Login.', 'success');
+                    setTimeout(() => {
+                        showLoginFromForgot();
+                        // Pre-fill
+                        document.getElementById('email').value = email;
+                    }, 1500);
+                } else {
+                    showAlert(data.message, 'danger');
+                    btn.innerText = 'Update Password';
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                console.error(err);
+                showAlert('Network Error', 'danger');
+                btn.innerText = 'Update Password';
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+
+</html>

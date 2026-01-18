@@ -1,0 +1,134 @@
+[
+  {
+    "timestamp": "1:23:14 pm",
+    "user": "admin@smartcity.com",
+    "role": "official",
+    "action": "Logged In"
+  },
+  {
+    "timestamp": "1:18:06 pm",
+    "user": "admin@smartcity.com",
+    "role": "official",
+    "action": "Logged In"
+  },
+  {
+    "timestamp": "1:11:36 pm",
+    "user": "admin@smartcity.com",
+    "role": "official",
+    "action": "Logged In"
+  },
+  {
+    "timestamp": "12:47:56 pm",
+    "user": "admin@smartcity.com",
+    "role": "official",
+    "action": "Logged In"
+  },
+  {
+    "timestamp": "12:42:31 pm",
+    "user": "admin@smartcity.com",
+    "role": "official",
+    "action": "Logged In"
+  },
+  {
+    "timestamp": "12:26:02 pm",
+    "user": "admin@smartcity.com",
+    "role": "official",
+    "action": "Updated Name, Area, Avatar, Phone Number, Gender, Date of Birth"
+  },
+  {
+    "timestamp": "12:25:42 pm",
+    "user": "admin@smartcity.com",
+    "role": "official",
+    "action": "Logged In"
+  },
+  {
+    "timestamp": "12:11:07 pm",
+    "user": "admin@smartcity.com",
+    "role": "official",
+    "action": "Updated Name, Area, Avatar, Phone Number, Gender, Date of Birth"
+  },
+  {
+    "timestamp": "12:10:55 pm",
+    "user": "admin@smartcity.com",
+    "role": "official",
+    "action": "Logged In"
+  },
+  {
+    "timestamp": "11:58:37 am",
+    "user": "admin@smartcity.com",
+    "role": "official",
+    "action": "Logged In"
+  },
+  {
+    "timestamp": "11:57:48 am",
+    "user": "admin@smartcity.com",
+    "role": "official",
+    "action": "Logged In"
+  },
+  {
+    "timestamp": "11:55:07 am",
+    "user": "admin@smartcity.com",
+    "role": "official",
+    "action": "Logged In"
+  },
+  {
+    "timestamp": "11:55:03 am",
+    "user": "admin@smartcity.com",
+    "role": "official",
+    "action": "Logged In"
+  },
+  {
+    "timestamp": "10:18:14 am",
+    "user": "admin@smartcity.com",
+    "role": "official",
+    "action": "Logged In"
+  },
+  {
+    "timestamp": "10:15:20 am",
+    "user": "admin@smartcity.com",
+    "role": "official",
+    "action": "Logged In"
+  },
+  {
+    "timestamp": "9:57:55 am",
+    "user": "admin@smartcity.com",
+    "role": "official",
+    "action": "Logged In"
+  },
+  {
+    "timestamp": "9:57:37 am",
+    "user": "admin@smartcity.com",
+    "role": "official",
+    "action": "Logged In"
+  },
+  {
+    "timestamp": "9:46:58 am",
+    "user": "admin@smartcity.com",
+    "role": "official",
+    "action": "Logged In"
+  },
+  {
+    "timestamp": "9:44:43 am",
+    "user": "admin@smartcity.com",
+    "role": "official",
+    "action": "Logged In"
+  },
+  {
+    "timestamp": "8:49:56 am",
+    "user": "rimshah832@gmail.com",
+    "role": "citizen",
+    "action": "Logged In"
+  },
+  {
+    "timestamp": "8:49:28 am",
+    "user": "rimshah832@gmail.com",
+    "role": "citizen",
+    "action": "Logged In"
+  },
+  {
+    "timestamp": "8:47:40 am",
+    "user": "rimshah832@gmail.com",
+    "role": "citizen",
+    "action": "Logged In"
+  }
+]

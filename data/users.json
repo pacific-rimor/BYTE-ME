@@ -1,0 +1,16 @@
+{
+  "admin@smartcity.com": {
+    "password": "admin",
+    "role": "official",
+    "name": "Rim Shah",
+    "area": "Downtown",
+    "profilePic": "👨‍💼",
+    "phoneNumber": "91 7359204245",
+    "gender": "Male",
+    "dob": "2001-01-01"
+  },
+  "rimshah832@gmail.com": {
+    "password": "123",
+    "role": "citizen"
+  }
+}

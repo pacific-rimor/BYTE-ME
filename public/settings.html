@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | MetroMatriX Dashboard</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* ... existing styles ... */
+        .avatar-option {
+            width: 60px;
+            height: 60px;
+            font-size: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s;
+            position: relative;
+            /* For pseudo-element */
+        }
+
+        .avatar-option:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .avatar-option.selected {
+            border-color: #ffd700;
+            /* Gold Border */
+            background: rgba(255, 215, 0, 0.2);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            transform: scale(1.15);
+            z-index: 10;
+        }
+
+        /* Checkmark Badge */
+        .avatar-option.selected::after {
+            content: '✓';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ffd700;
+            color: #000;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #1a1a1a;
+        }
+
+        /* Custom Success Popup */
+        .success-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(20, 20, 30, 0.95);
+            border: 1px solid #4ade80;
+            padding: 30px 50px;
+            border-radius: 15px;
+            text-align: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 30px rgba(74, 222, 128, 0.2);
+        }
+
+        .success-popup.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: all;
+        }
+
+        .checkmark-circle {
+            width: 60px;
+            height: 60px;
+            background: #4ade80;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: #1a1a1a;
+            font-size: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation - Top Navbar -->
+    <div id="navbar-container"></div>
+    <script src="js/navbar.js"></script>
+    <div id="sidebarOverlay" class="position-fixed top-0 start-0 w-100 h-100"
+        style="z-index: 1050; display: none; background: rgba(0,0,0,0.5);"></div>
+
+    <!-- Custom Success Popup -->
+    <div id="customSuccessPopup" class="success-popup">
+        <div class="checkmark-circle">✓</div>
+        <h4 class="text-white mb-0">Changes Saved</h4>
+    </div>
+
+    <!-- Layout container -->
+    <div class="d-flex flex-column flex-md-row">
+
+        <!-- Internal Settings Menu -->
+        <div class="settings-menu p-3 bg-dark border border-secondary rounded m-3"
+            style="min-width: 250px; height: fit-content;">
+            <h5 class="mb-3 ps-2 text-white">Settings</h5>
+            <div class="nav flex-column nav-pills" role="tablist">
+                <button class="nav-link active text-start mb-1 text-white" data-bs-toggle="pill"
+                    data-bs-target="#profile">
+                    Profile Management
+                </button>
+                <button class="nav-link text-start mb-1 text-white" data-bs-toggle="pill" data-bs-target="#privacy">
+                    Privacy
+                </button>
+                <button class="nav-link text-start mb-1 text-white" data-bs-toggle="pill" data-bs-target="#activity">
+                    History
+                </button>
+
+                <!-- Official Only Section -->
+                <div id="official-menu" style="display: none;">
+                    <hr class="my-2">
+                    <small class="text-muted ps-2 uppercase">Official Zone</small>
+                    <button class="nav-link text-start mb-1 text-warning" data-bs-toggle="pill" data-bs-target="#team">
+                        Manage Team
+                    </button>
+                    <button class="nav-link text-start mb-1 text-warning" data-bs-toggle="pill" data-bs-target="#audit">
+                        Audit Logs
+                    </button>
+                </div>
+
+                <hr class="my-2">
+                <button class="nav-link text-start mb-1" data-bs-toggle="pill" data-bs-target="#help">
+                    Help & Support
+                </button>
+
+                <hr class="my-2">
+                <button class="nav-link text-start mb-1 text-danger fw-bold" onclick="logout()">
+                    Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-grow-1 p-4">
+
+            <div class="tab-content">
+                <!-- Profile Tab -->
+                <div class="tab-pane fade show active" id="profile">
+                    <h3 class="mb-4">Profile Settings</h3>
+
+                    <!-- 1. Edit Details -->
+                    <div class="dashboard-card card mb-4">
+                        <div class="card-header bg-transparent border-secondary text-white fw-bold">
+                            Personal Details
+                        </div>
+                        <div class="card-body">
+                            <form id="profile-form">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" id="profile-name">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email Address (ID)</label>
+                                        <input type="email" class="form-control bg-secondary text-white border-0"
+                                            id="profile-email" readonly
+                                            style="opacity: 0.8; cursor: not-allowed; font-weight: bold;">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Phone Number</label>
+                                        <input type="tel" class="form-control" id="profile-phone"
+                                            placeholder="+1 234 567 8900">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Residential Area</label>
+                                        <select class="form-select bg-dark text-white border-secondary"
+                                            id="profile-area">
+                                            <option value="Downtown">Downtown</option>
+                                            <option value="Suburbs">Suburbs</option>
+                                            <option value="Industrial Dist">Industrial District</option>
+                                            <option value="Green Zone">Green Zone</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Gender</label>
+                                        <select class="form-select bg-dark text-white border-secondary"
+                                            id="profile-gender">
+                                            <option value="">Select Gender...</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                            <option value="Non-binary">Non-binary</option>
+                                            <option value="Prefer not to say">Prefer not to say</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Date of Birth</label>
+                                        <input type="date" class="form-control" id="profile-dob">
+                                    </div>
+
+                                    <!-- New Avatar Selector -->
+                                    <div class="col-12">
+                                        <label class="form-label mb-2">Select Avatar</label>
+                                        <div class="d-flex gap-3 flex-wrap" id="avatar-container">
+                                            <div class="avatar-option" data-id="av1" data-avatar="A"
+                                                onclick="selectAvatar('A', this)">A</div>
+                                            <div class="avatar-option" data-id="av2" data-avatar="B"
+                                                onclick="selectAvatar('B', this)">B</div>
+                                            <div class="avatar-option" data-id="av3" data-avatar="C"
+                                                onclick="selectAvatar('C', this)">C</div>
+                                            <div class="avatar-option" data-id="av4" data-avatar="D"
+                                                onclick="selectAvatar('D', this)">D</div>
+                                            <div class="avatar-option" data-id="av5" data-avatar="E"
+                                                onclick="selectAvatar('E', this)">E</div>
+                                            <div class="avatar-option" data-id="av6" data-avatar="U"
+                                                onclick="selectAvatar('U', this)">U</div>
+                                            <div class="avatar-option" data-id="av7" data-avatar="F"
+                                                onclick="selectAvatar('F', this)">F</div>
+                                            <div class="avatar-option" data-id="av8" data-avatar="G"
+                                                onclick="selectAvatar('G', this)">G</div>
+                                        </div>
+                                        <input type="hidden" id="profile-pic" value="U">
+                                    </div>
+
+                                    <div class="col-12 text-end mt-4">
+                                        <button type="button" class="btn btn-primary" onclick="saveProfile()">Save
+                                            Details</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- 2. Security Settings -->
+                    <div class="dashboard-card card border-warning">
+                        <div class="card-header bg-transparent border-warning text-warning fw-bold">
+                            Security & Password
+                        </div>
+                        <div class="card-body">
+                            <form id="password-form">
+                                <div class="row g-3 align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Current Password</label>
+                                        <input type="password" class="form-control" id="sec-current-password"
+                                            placeholder="Required for changes">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">New Password</label>
+                                        <input type="password" class="form-control" id="sec-new-password"
+                                            placeholder="Min 6 characters">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="button" class="btn btn-outline-warning w-100"
+                                            onclick="changePassword()">Update Password</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Privacy Tab -->
+                <div class="tab-pane fade" id="privacy">
+                    <h3 class="mb-4">Privacy & Data</h3>
+                    <div class="dashboard-card card mb-4">
+                        <div class="card-body">
+                            <h5 class="text-info">Info Control</h5>
+                            <p class="text-muted small">Manage how your data is stored and shared.</p>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span>Share Anonymized Usage Data</span>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline-light btn-sm" onclick="alert('Data Exported to CSV')">Export
+                                My Data</button>
+                        </div>
+                    </div>
+                    <div class="dashboard-card card border-danger">
+                        <div class="card-body">
+                            <h5 class="text-danger">Danger Zone</h5>
+                            <button class="btn btn-outline-danger btn-sm"
+                                onclick="alert('Account deletion request sent to admin.')">Delete Account</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Help & Feedback -->
+                <div class="tab-pane fade" id="help">
+                    <h3 class="mb-4">Help & Feedback</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="dashboard-card card h-100">
+                                <div class="card-body">
+                                    <h5>Send Feedback</h5>
+                                    <p class="text-muted small">Report a bug or suggest a feature.</p>
+                                    <div class="mb-3">
+                                        <select class="form-select bg-dark text-white border-secondary mb-2"
+                                            id="feedback-type">
+                                            <option value="Bug">Report Bug</option>
+                                            <option value="Feature">Suggest Feature</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                        <textarea class="form-control" id="feedback-msg" rows="4"
+                                            placeholder="Describe your issue..."></textarea>
+                                    </div>
+                                    <button class="btn btn-primary w-100" onclick="sendFeedback()">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="dashboard-card card h-100">
+                                <div class="card-body">
+                                    <h5 class="text-success">Contact Web Handler</h5>
+                                    <p class="text-muted small">Direct contact for technical or administrative issues.
+                                    </p>
+
+                                    <h6 class="mt-4 text-white">Official Email IDs</h6>
+                                    <ul class="list-unstyled text-info small">
+                                        <li class="mb-1">admin@smartcity.com (Main)</li>
+                                        <li class="mb-1">support@smartcity.com (Tech)</li>
+                                        <li>compliance@smartcity.com (Legal)</li>
+                                    </ul>
+
+                                    <h6 class="mt-4 text-white">Official Phone Numbers</h6>
+                                    <ul class="list-unstyled text-info small">
+                                        <li class="mb-1">+1 (800) CITY-HEL</li>
+                                        <li>+1 (555) 012-3456 (Emergency IT)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preferences Tab -->
+                <div class="tab-pane fade" id="preferences">
+                    <h3 class="mb-4">Preferences</h3>
+                    <div class="dashboard-card card">
+                        <div class="card-body">
+                            <div class="list-group list-group-flush">
+                                <div
+                                    class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white border-bottom border-secondary">
+                                    <div>
+                                        <h6 class="mb-0">Email Notifications</h6>
+                                        <small class="text-secondary">Receive weekly summaries</small>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" checked>
+                                    </div>
+                                </div>
+                                <div
+                                    class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white border-0">
+                                    <div>
+                                        <h6 class="mb-0">Compact Mode</h6>
+                                        <small class="text-secondary">Reduce whitespace in dashboard</small>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Management (Official) -->
+                <div class="tab-pane fade" id="team">
+                    <h3 class="mb-4 text-warning">Manage Team</h3>
+                    <div class="dashboard-card card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Add New Official</h5>
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <input type="email" id="new-official-email" class="form-control"
+                                        placeholder="colleague@smartcity.com">
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="password" id="new-official-password" class="form-control"
+                                        placeholder="Your Password">
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-outline-warning w-100" type="button"
+                                        onclick="handleAddOfficial()">Add</button>
+                                </div>
+                            </div>
+                            <div class="alert alert-info py-2">
+                                <small>Whitelisted emails can create an 'Official' account upon login.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- View All Officials -->
+                    <div class="dashboard-card card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0">Official Directory</h5>
+                                <button class="btn btn-sm btn-outline-warning" onclick="loadOfficials()">
+                                    Refresh
+                                </button>
+                            </div>
+
+                            <!-- Search Box -->
+                            <div class="mb-3">
+                                <input type="text" id="official-search" class="form-control"
+                                    placeholder="Search by email..." onkeyup="filterOfficials()">
+                            </div>
+
+                            <!-- Officials List -->
+                            <div class="table-responsive">
+                                <table class="table table-dark table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Email Address</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="officials-table-body">
+                                        <tr>
+                                            <td colspan="3" class="text-center text-muted">
+                                                Click "Refresh" to load officials
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    Total: <span id="officials-count">0</span> official(s)
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audit Logs (Official) -->
+                <div class="tab-pane fade" id="audit">
+                    <h3 class="mb-4 text-warning">System Audit</h3>
+                    <div class="dashboard-card card">
+                        <div class="card-body">
+                            <table class="table table-dark table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>User</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="audit-table-body">
+                                    <!-- Dynamic Content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity (Citizen) -->
+                <div class="tab-pane fade" id="activity">
+                    <h3 class="mb-4 text-info">Recent Activity</h3>
+                    <div class="dashboard-card card">
+                        <div class="card-body">
+                            <ul class="list-group bg-transparent" id="activity-list">
+                                <!-- Dynamic Content -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Logic -->
+    <script src="js/auth.js?v=4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        loadUserProfile();
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserProfile();
+            if (!checkAuth()) return;
+
+            // Ensure Email is present
+            if (!email) {
+                // Silent redirect for better UX
+                console.warn('Session Invalid: Email missing');
+                logout();
+                return;
+            }
+
+            // Sidebar Info
+            document.getElementById('display-name').textContent = name;
+            document.getElementById('display-email').textContent = email;
+            document.getElementById('user-avatar-small').textContent = pic;
+
+            // Top Badge
+            const badge = document.getElementById('top-role-badge');
+            badge.textContent = role.toUpperCase();
+            badge.className = role === 'official' ? 'badge bg-warning me-3' : 'badge bg-info me-3';
+
+            // Profile Tab Inputs
+            // Explicitly setting value property not just attribute to ensure it sticks
+            const emailField = document.getElementById('profile-email');
+            if (emailField) {
+                emailField.value = email;
+            }
+
+            document.getElementById('profile-name').value = name;
+            document.getElementById('profile-area').value = area;
+            document.getElementById('profile-pic').value = pic;
+            document.getElementById('profile-phone').value = phone;
+            document.getElementById('profile-gender').value = gender;
+            document.getElementById('profile-dob').value = dob;
+
+            // Initialize Avatar Selection
+            selectAvatar(pic);
+
+            // Role Menu Visibility
+            if (role === 'official') {
+                document.getElementById('official-menu').style.display = 'block';
+                fetchLogs('official');
+            }
+
+            // Allow everyone to see their own history
+            fetchLogs('citizen');
+
+            // Handle Deep Linking to Tabs
+            const urlParams = new URLSearchParams(window.location.search);
+            const tabParam = urlParams.get('tab');
+            if (tabParam) {
+                setTimeout(() => {
+                    const tabButton = document.querySelector(`button[data-bs-target="#${tabParam}"]`);
+                    if (tabButton) {
+                        const tab = new bootstrap.Tab(tabButton);
+                        tab.show();
+                    }
+                }, 100);
+            }
+        });
+
+        function selectAvatar(emoji, element) {
+            document.getElementById('profile-pic').value = emoji;
+            const options = document.querySelectorAll('.avatar-option');
+
+            options.forEach(opt => opt.classList.remove('selected'));
+
+            // If element is passed (click), select it
+            if (element) {
+                element.classList.add('selected');
+                return;
+            }
+
+            // If initializing (load), find by data-avatar or text content
+            options.forEach(opt => {
+                if (opt.dataset.avatar === emoji || opt.textContent.trim() === emoji) {
+                    opt.classList.add('selected');
+                }
+            });
+        }
+
+        async function saveProfile() {
+            // Use session email as the source of truth, not the input field
+            const email = sessionStorage.getItem('userEmail');
+            const name = document.getElementById('profile-name').value;
+            const area = document.getElementById('profile-area').value;
+            const pic = document.getElementById('profile-pic').value;
+            const phone = document.getElementById('profile-phone').value;
+            const gender = document.getElementById('profile-gender').value;
+            const dob = document.getElementById('profile-dob').value;
+
+            if (!email) {
+                console.warn('Critical: Email is missing during save.');
+                // User requested to solve the error, which means FIXING the missing email, 
+                // but if it IS missing, we must redirect. 
+                // I will remove the alert to be less annoying as requested earlier, 
+                // but the real fix is ensuring email is there (done in previous step).
+                forceLogout();
+                return;
+            }
+
+            const res = await updateUserProfile({
+                email, name, area, profilePic: pic, phoneNumber: phone, gender, dob
+            });
+
+            if (res.success) {
+                showSuccessPopup();
+
+                // Update session so UI stays in sync
+                sessionStorage.setItem('userName', name);
+                sessionStorage.setItem('userArea', area);
+                sessionStorage.setItem('userPic', pic);
+                sessionStorage.setItem('userPhone', phone);
+                sessionStorage.setItem('userGender', gender);
+                sessionStorage.setItem('userDOB', dob);
+            } else {
+                if (res.message === 'User not found') {
+                    alert('Session expired or invalid. Please login again.');
+                    logout();
+                } else {
+                    alert('Update failed: ' + res.message);
+                }
+            }
+        }
+        function showSuccessPopup() {
+            const popup = document.getElementById('customSuccessPopup');
+            popup.classList.add('show');
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 2000);
+        }
+
+        async function changePassword() {
+            const email = sessionStorage.getItem('userEmail');
+            const currentPassword = document.getElementById('sec-current-password').value;
+            const newPassword = document.getElementById('sec-new-password').value;
+
+            if (!currentPassword || !newPassword) {
+                return alert('Please fill in all password fields.');
+            }
+
+            if (newPassword.length < 6) {
+                return alert('New password must be at least 6 characters.');
+            }
+
+            const res = await updateUserProfile({
+                email,
+                password: newPassword,
+                currentPassword: currentPassword
+            });
+
+            if (res.success) {
+                alert('Password Updated Successfully!');
+                document.getElementById('password-form').reset();
+            } else {
+                alert('Password Update Failed: ' + res.message);
+            }
+        }
+
+        async function sendFeedback() {
+            const email = sessionStorage.getItem('userEmail');
+            const type = document.getElementById('feedback-type').value;
+            const msg = document.getElementById('feedback-msg').value;
+
+            if (!msg) return alert('Please enter a message');
+
+            const res = await submitUserFeedback({ email, type, message: msg });
+            if (res.success) {
+                alert('Feedback Sent! We appreciate your input.');
+                document.getElementById('feedback-msg').value = '';
+            }
+        }
+
+        async function fetchLogs(role) {
+            try {
+                const email = sessionStorage.getItem('userEmail');
+                const res = await fetch('/api/logs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, role })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    if (role === 'official') {
+                        // Officials see all logs in Audit tab
+                        const tbody = document.getElementById('audit-table-body');
+                        tbody.innerHTML = data.logs.length ? data.logs.map(log => `
+                            <tr>
+                                <td>${log.timestamp}</td>
+                                <td>${log.user}</td>
+                                <td>${log.action}</td>
+                            </tr>
+                        `).join('') : '<tr><td colspan="3" class="text-center text-muted">No logs available</td></tr>';
+                    } else {
+                        // Citizens see only their own activity in Activity tab
+                        const list = document.getElementById('activity-list');
+                        // Filter logs to show only current user's activity
+                        const userLogs = data.logs.filter(log => log.user === email);
+                        list.innerHTML = userLogs.length ? userLogs.map(log => `
+                            <li class="list-group-item bg-transparent text-white border-secondary">
+                                <span class="text-info">[${log.timestamp}]</span> ${log.action}
+                            </li>
+                        `).join('') : '<li class="list-group-item bg-transparent text-muted">No recent activity.</li>';
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to fetch logs', err);
+            }
+        }
+
+        // Load Officials List
+        let allOfficials = [];
+        async function loadOfficials() {
+            const email = sessionStorage.getItem('userEmail');
+            const role = sessionStorage.getItem('userRole');
+
+            try {
+                const res = await fetch('/api/get-officials', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, role })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    allOfficials = data.officials;
+                    displayOfficials(allOfficials);
+                } else {
+                    alert('Failed to load officials: ' + data.message);
+                }
+            } catch (err) {
+                console.error('Failed to load officials', err);
+                alert('Network error');
+            }
+        }
+
+        function displayOfficials(officials) {
+            const tbody = document.getElementById('officials-table-body');
+            const countSpan = document.getElementById('officials-count');
+
+            if (!officials || officials.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">No officials found</td></tr>';
+                countSpan.textContent = '0';
+                return;
+            }
+
+            tbody.innerHTML = officials.map((email, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${email}</td>
+                    <td>
+                        <span class="badge bg-success">Whitelisted</span>
+                    </td>
+                </tr>
+            `).join('');
+
+            countSpan.textContent = officials.length;
+        }
+
+        function filterOfficials() {
+            const searchTerm = document.getElementById('official-search').value.toLowerCase();
+            const filtered = allOfficials.filter(email =>
+                email.toLowerCase().includes(searchTerm)
+            );
+            displayOfficials(filtered);
+        }
+
+        function handleAddOfficial() {
+            const email = document.getElementById('new-official-email').value;
+            const password = document.getElementById('new-official-password').value;
+            if (!email || !password) {
+                alert('Please enter both email and your password.'); return;
+            }
+            addOfficialEmail(email, password);
+        }
+
+        function confirmLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                forceLogout();
+            }
+        }
+
+        function forceLogout() {
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('isLoggedIn');
+            window.location.href = '/login.html';
+        }
+        async function loadUserProfile() {
+            const email = sessionStorage.getItem('userEmail');
+            if (!email) {
+                logout();
+                return;
+            }
+            try {
+                const res = await fetch('/api/get-profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const data = await res.json();
+                if (!data.success) return;
+                const user = data.user;
+                sessionStorage.setItem('userName', user.name || 'User');
+                sessionStorage.setItem('userArea', user.area || 'Downtown');
+                sessionStorage.setItem('userPic', user.profilePic || 'U');
+                sessionStorage.setItem('userPhone', user.phoneNumber || '');
+                sessionStorage.setItem('userGender', user.gender || '');
+                sessionStorage.setItem('userDOB', user.dob || '');
+
+                document.getElementById('profile-name').value = user.name || '';
+                document.getElementById('profile-area').value = user.area || 'Downtown';
+                document.getElementById('profile-pic').value = user.profilePic || 'U';
+                document.getElementById('profile-phone').value = user.phoneNumber || '';
+                document.getElementById('profile-gender').value = user.gender || '';
+                document.getElementById('profile-dob').value = user.dob || '';
+                selectAvatar(user.profilePic || 'U');
+            } catch (err) {
+                console.error('Failed to load profile', err);
+            }
+        }
+
+
+    </script>
+</body>
+
+</html>
